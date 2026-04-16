@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gorras 1.1</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a;
+      --surface: #111111;
+      --border: #222222;
+      --accent: #e8d5a3;
+      --accent2: #c9a96e;
+      --text: #f0ece4;
+      --muted: #666;
+      --font-display: 'Bebas Neue', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 68px;
+    }
+
+    .logo {
+      font-family: var(--font-display);
+      font-size: 1.9rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .header-tag {
+      font-size: 0.72rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 5rem 2.5rem 3.5rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 1rem;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.5rem, 10vw, 7rem);
+      line-height: 0.92;
+      letter-spacing: 0.04em;
+      color: var(--text);
+    }
+
+    .hero h1 span {
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      margin-top: 1.5rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+      max-width: 380px;
+    }
+
+    /* FILTER BAR */
+    .filter-bar {
+      padding: 0 2.5rem 2rem;
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      padding: 0.45rem 1.1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* GRID */
+    .catalog-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    @media (min-width: 768px) {
+      .catalog-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .catalog-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* PRODUCT CARD */
+    .product-card {
+      background: var(--surface);
+      cursor: pointer;
+      overflow: hidden;
+      position: relative;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .product-card:nth-child(1) { animation-delay: 0.05s; }
+    .product-card:nth-child(2) { animation-delay: 0.10s; }
+    .product-card:nth-child(3) { animation-delay: 0.15s; }
+    .product-card:nth-child(4) { animation-delay: 0.20s; }
+    .product-card:nth-child(5) { animation-delay: 0.25s; }
+    .product-card:nth-child(6) { animation-delay: 0.30s; }
+    .product-card:nth-child(7) { animation-delay: 0.35s; }
+    .product-card:nth-child(8) { animation-delay: 0.40s; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-image-wrap {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      display: block;
+    }
+
+    .product-card:hover .card-image-wrap img {
+      transform: scale(1.06);
+    }
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 50%);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    .product-card:hover .card-overlay { opacity: 1; }
+
+    .card-badge {
+      position: absolute;
+      top: 0.85rem;
+      left: 0.85rem;
+      background: var(--accent);
+      color: #0a0a0a;
+      font-size: 0.6rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: 500;
+      padding: 0.2rem 0.55rem;
+    }
+
+    .card-info {
+      padding: 1rem 1rem 1.2rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .card-category {
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent2);
+      margin-bottom: 0.35rem;
+    }
+
+    .card-name {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      line-height: 1.1;
+      margin-bottom: 0.4rem;
+    }
+
+    .card-price {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-weight: 300;
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 1rem;
+      right: 1rem;
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s, border-color 0.2s;
+      font-size: 0.9rem;
+    }
+
+    .product-card:hover .card-arrow {
+      opacity: 1;
+      border-color: var(--accent);
+    }
+
+    /* ─── MODAL / DETAIL VIEW ─── */
+    .modal-bg {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 200;
+      backdrop-filter: blur(6px);
+      overflow-y: auto;
+      padding: 2rem 1rem;
+    }
+
+    .modal-bg.open { display: flex; align-items: flex-start; justify-content: center; }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      max-width: 900px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr;
+      animation: slideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+      position: relative;
+    }
+
+    @media (min-width: 640px) {
+      .modal { grid-template-columns: 1fr 1fr; }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(30px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(0,0,0,0.5);
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 36px;
+      height: 36px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 10;
+      transition: border-color 0.2s;
+    }
+
+    .modal-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* GALLERY */
+    .modal-gallery {
+      position: relative;
+      background: #0d0d0d;
+    }
+
+    .gallery-main {
+      aspect-ratio: 3/4;
+      overflow: hidden;
+    }
+
+    .gallery-main img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: opacity 0.3s;
+    }
+
+    .gallery-thumbs {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      background: var(--bg);
+    }
+
+    .gallery-thumbs img {
+      flex: 1;
+      height: 60px;
+      object-fit: cover;
+      cursor: pointer;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .gallery-thumbs img.active,
+    .gallery-thumbs img:hover {
+      opacity: 1;
+      border-color: var(--accent);
+    }
+
+    /* MODAL INFO */
+    .modal-info {
+      padding: 2.5rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .modal-category {
+      font-size: 0.65rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent2);
+    }
+
+    .modal-name {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+
+    .modal-price {
+      font-size: 1.4rem;
+      color: var(--accent);
+      font-weight: 300;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    .modal-desc {
+      font-size: 0.88rem;
+      color: #999;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .modal-details {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .detail-label {
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      font-size: 0.68rem;
+    }
+
+    .detail-value { color: var(--text); }
+
+    /* WHATSAPP SECTION */
+    .wa-section {
+      position: relative;
+      z-index: 1;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 5rem 2.5rem;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    .wa-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.35em;
+      text-transform: uppercase;
+      color: var(--accent2);
+    }
+
+    .wa-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.5rem, 8vw, 5rem);
+      line-height: 0.95;
+      letter-spacing: 0.05em;
+    }
+
+    .wa-title span { color: #25d366; }
+
+    .wa-sub {
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 360px;
+      line-height: 1.7;
+    }
+
+    .wa-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin-top: 0.5rem;
+      background: #25d366;
+      color: #0a0a0a;
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 1rem 2rem;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .wa-btn:hover {
+      background: #1ebe5d;
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    footer {
+      margin-top: 1px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 2rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+
+    .footer-text {
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <a class="logo" href="#">GORRAS 1.1</a>
+  <span class="header-tag">Catálogo de Gorras</span>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <p class="hero-eyebrow">Colección Exclusiva</p>
+  <h1>GORRAS &<br/><span>ESTILO<br/>ÚNICO</span></h1>
+  <p class="hero-sub">Explora nuestra selección de gorras. Haz clic en cualquier modelo para ver más fotos y detalles.</p>
+</section>
+
+<!-- FILTROS -->
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterProducts('todos', this)">Todos</button>
+  <button class="filter-btn" onclick="filterProducts('dandy-hats', this)">Dandy Hats</button>
+  <button class="filter-btn" onclick="filterProducts('barbas-hats', this)">Barbas Hats</button>
+  <button class="filter-btn" onclick="filterProducts('31-hats', this)">31 Hats</button>
+  <button class="filter-btn" onclick="filterProducts('rude', this)">Rude</button>
+  <button class="filter-btn" onclick="filterProducts('otras-marcas', this)">Otras marcas</button>
+</div>
+
+<!-- CATÁLOGO GRID -->
+<main class="catalog-grid" id="grid"></main>
+
+<!-- MODAL DETALLE -->
+<div class="modal-bg" id="modalBg" onclick="closeModalOnBg(event)">
+  <div class="modal" id="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <div class="modal-gallery">
+      <div class="gallery-main">
+        <img id="mainImg" src="" alt="" />
+      </div>
+      <div class="gallery-thumbs" id="thumbs"></div>
+    </div>
+
+    <div class="modal-info">
+      <p class="modal-category" id="mCat"></p>
+      <h2 class="modal-name" id="mName"></h2>
+      <p class="modal-price" id="mPrice"></p>
+      <hr class="modal-divider" />
+      <p class="modal-desc" id="mDesc"></p>
+      <div class="modal-details" id="mDetails"></div>
+    </div>
+  </div>
+</div>
+
+<!-- SECCIÓN WHATSAPP -->
+<section class="wa-section">
+  <p class="wa-eyebrow">¿Te interesa algo?</p>
+  <h2 class="wa-title">CONTÁCTAME<br/><span>POR WHATSAPP</span></h2>
+  <p class="wa-sub">Escríbeme directo, con gusto te doy más info, tallas disponibles o lo que necesites.</p>
+  <a class="wa-btn" href="https://wa.me/522205203590?text=Hola!%20vi%20tu%20catalogo%20y%20me%20interesa%20un%20producto" target="_blank">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    Escribir por WhatsApp
+  </a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span class="footer-logo">GORRAS 1.1</span>
+  <span class="footer-text">Catálogo · Solo exhibición</span>
+</footer>
+
+<script>
+// ─────────────────────────────────────────
+//  AQUÍ ES DONDE AGREGAS TUS PRODUCTOS
+//  Cada producto tiene:
+//    name     → nombre del producto
+//    category → "dandy-hats" | "barbas-hats" | "31-hats" | "rude" | "otras-marcas"
+//    price    → precio
+//    badge    → etiqueta opcional ("Nuevo", "Oferta", etc.) — pon "" para quitar
+//    desc     → descripción corta
+//    details  → pares clave/valor de características
+//    images   → arreglo de URLs de fotos (la primera sale en el grid)
+// ─────────────────────────────────────────
+const products = [
+  {
+    name: "Gorra 01",
+    category: "dandy-hats Lost-Hills",
+    price: "$500 MXN",
+    badge: "Nuevo",
+    desc: "Descripción del producto. Puedes cambiar este texto por las características de tu gorra.",
+    details: [
+      { label: "Marca", value: "Dandy Hats" },
+      { label: "Talla", value: "Única ajustable" },
+      { label: "Material", value: "Algodón" },
+      { label: "Colores", value: "Negro, Beige" },
+    ],
+    images: [
+      "https://i.imgur.com/GKwTr95.jpeg",
+      "https://i.imgur.com/RZpnzei.jpeg",
+    ]
+  },
+  {
+    name: "Gorra 02",
+    category: "barbas-hats BBB-Blue",
+    price: "$500 MXN",
+    badge: "",
+    desc: "Descripción del producto. Puedes cambiar este texto por las características de tu gorra.",
+    details: [
+      { label: "Marca", value: "Barbas Hats" },
+      { label: "Talla", value: "Única ajustable" },
+      { label: "Material", value: "Poliéster + algodón" },
+      { label: "Colores", value: "Negro, Blanco" },
+    ],
+    images: [
+      "https://i.imgur.com/wvTAW63.jpeg",
+      "https://i.imgur.com/xbs6YjB.jpeg",
+    ]
+  },
+  {
+    name: "Gorra 03",
+    category: "31-hats",
+    price: "$500 MXN",
+    badge: "Nuevo",
+    desc: "Descripción del producto. Puedes cambiar este texto por las características de tu gorra.",
+    details: [
+      { label: "Marca", value: "31 Hats" },
+      { label: "Talla", value: "Única ajustable" },
+      { label: "Material", value: "Algodón lavado" },
+      { label: "Colores", value: "Café, Verde" },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1534215754734-18e55d13e346?w=600&q=80",
+      "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=600&q=80",
+    ]
+  },
+  {
+    name: "Gorra 04",
+    category: "rude",
+    price: "$500 MXN",
+    badge: "Oferta",
+    desc: "Descripción del producto. Puedes cambiar este texto por las características de tu gorra.",
+    details: [
+      { label: "Marca", value: "Rude" },
+      { label: "Talla", value: "Única ajustable" },
+      { label: "Material", value: "Twill" },
+      { label: "Colores", value: "Negro, Gris" },
+    ],
+    images: [
+      "https://images.unsplash.com/photo-1529958030586-3aae4ca485ff?w=600&q=80",
+      "https://images.unsplash.com/photo-1556306535-0f09a537f0a3?w=600&q=80",
+    ]
+  },
+  {
+    name: "Gorra 05",
+    category: "BaezXShifu",
+    price: "$500 MXN",
+    badge: "",
+    desc: "Descripción del producto. Puedes cambiar este texto por las características de tu gorra.",
+    details: [
+      { label: "Marca", value: "Otras marcas" },
+      { label: "Talla", value: "Única ajustable" },
+      { label: "Material", value: "Algodón" },
+      { label: "Colores", value: "Blanco, Azul" },
+    ],
+    images: [
+      "https://i.imgur.com/L7eHLmg.jpeg",
+      "https://i.imgur.com/HX22blX.jpeg",
+    ]
+  },
+];
+
+// ─── RENDER GRID ───
+const grid = document.getElementById('grid');
+
+function renderGrid(filter = 'todos') {
+  grid.innerHTML = '';
+  const filtered = filter === 'todos' ? products : products.filter(p => p.category === filter);
+  filtered.forEach((p, i) => {
+    const idx = products.indexOf(p);
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.animationDelay = `${i * 0.055}s`;
+    card.innerHTML = `
+      <div class="card-image-wrap">
+        <img src="${p.images[0]}" alt="${p.name}" loading="lazy" />
+        <div class="card-overlay"></div>
+        ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+      </div>
+      <div class="card-info">
+        <p class="card-category">${p.category}</p>
+        <p class="card-name">${p.name}</p>
+        <p class="card-price">${p.price}</p>
+      </div>
+      <div class="card-arrow">→</div>
+    `;
+    card.addEventListener('click', () => openModal(idx));
+    grid.appendChild(card);
+  });
+}
+
+// ─── FILTER ───
+function filterProducts(cat, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderGrid(cat);
+}
+
+// ─── MODAL ───
+function openModal(idx) {
+  const p = products[idx];
+  document.getElementById('mCat').textContent = p.category.toUpperCase();
+  document.getElementById('mName').textContent = p.name;
+  document.getElementById('mPrice').textContent = p.price;
+  document.getElementById('mDesc').textContent = p.desc;
+
+  // Details
+  const det = document.getElementById('mDetails');
+  det.innerHTML = p.details.map(d => `
+    <div class="detail-row">
+      <span class="detail-label">${d.label}</span>
+      <span class="detail-value">${d.value}</span>
+    </div>
+  `).join('');
+
+  // Gallery
+  const mainImg = document.getElementById('mainImg');
+  mainImg.src = p.images[0];
+  mainImg.alt = p.name;
+
+  const thumbs = document.getElementById('thumbs');
+  thumbs.innerHTML = p.images.map((img, i) => `
+    <img src="${img}" alt="${p.name} foto ${i+1}" class="${i === 0 ? 'active' : ''}"
+      onclick="switchImage(this, '${img}')" />
+  `).join('');
+
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function switchImage(thumb, src) {
+  document.getElementById('mainImg').src = src;
+  document.querySelectorAll('.gallery-thumbs img').forEach(t => t.classList.remove('active'));
+  thumb.classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modalBg').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modalBg')) closeModal();
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ─── INIT ───
+renderGrid();
+</script>
+</body>
+</html>
