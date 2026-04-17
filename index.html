@@ -327,13 +327,51 @@
     .gallery-main {
       aspect-ratio: 3/4;
       overflow: hidden;
+      position: relative;
     }
 
-    .gallery-main img {
+    .gallery-slider {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: transform;
+    }
+
+    .gallery-slider img {
+      min-width: 100%;
       width: 100%;
       height: 100%;
       object-fit: cover;
-      transition: opacity 0.3s;
+      flex-shrink: 0;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+
+    /* Dots indicadores */
+    .gallery-dots {
+      position: absolute;
+      bottom: 0.7rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 6px;
+      z-index: 5;
+    }
+
+    .gallery-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transition: background 0.25s, transform 0.25s;
+      cursor: pointer;
+    }
+
+    .gallery-dot.active {
+      background: var(--accent);
+      transform: scale(1.3);
     }
 
     .gallery-thumbs {
@@ -545,8 +583,9 @@
     <button class="modal-close" onclick="closeModal()">✕</button>
 
     <div class="modal-gallery">
-      <div class="gallery-main">
-        <img id="mainImg" src="" alt="" />
+      <div class="gallery-main" id="galleryMain">
+        <div class="gallery-slider" id="gallerySlider"></div>
+        <div class="gallery-dots" id="galleryDots"></div>
       </div>
       <div class="gallery-thumbs" id="thumbs"></div>
     </div>
@@ -716,6 +755,9 @@ function filterProducts(cat, btn) {
 }
 
 // ─── MODAL ───
+let currentImages = [];
+let currentIndex = 0;
+
 function openModal(idx) {
   const p = products[idx];
   document.getElementById('mCat').textContent = p.category.toUpperCase();
@@ -732,25 +774,88 @@ function openModal(idx) {
     </div>
   `).join('');
 
-  // Gallery
-  const mainImg = document.getElementById('mainImg');
-  mainImg.src = p.images[0];
-  mainImg.alt = p.name;
+  // Gallery slider
+  currentImages = p.images;
+  currentIndex = 0;
+  buildSlider();
 
+  // Thumbs
   const thumbs = document.getElementById('thumbs');
   thumbs.innerHTML = p.images.map((img, i) => `
     <img src="${img}" alt="${p.name} foto ${i+1}" class="${i === 0 ? 'active' : ''}"
-      onclick="switchImage(this, '${img}')" />
+      onclick="goToSlide(${i})" />
   `).join('');
 
   document.getElementById('modalBg').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
+function buildSlider() {
+  const slider = document.getElementById('gallerySlider');
+  const dots = document.getElementById('galleryDots');
+
+  slider.innerHTML = currentImages.map((img, i) =>
+    `<img src="${img}" alt="foto ${i+1}" />`
+  ).join('');
+
+  dots.innerHTML = currentImages.map((_, i) =>
+    `<div class="gallery-dot ${i === 0 ? 'active' : ''}" onclick="goToSlide(${i})"></div>`
+  ).join('');
+
+  slider.style.transform = `translateX(0%)`;
+}
+
+function goToSlide(index) {
+  currentIndex = index;
+  const slider = document.getElementById('gallerySlider');
+  slider.style.transform = `translateX(-${index * 100}%)`;
+
+  // Sync dots
+  document.querySelectorAll('.gallery-dot').forEach((d, i) =>
+    d.classList.toggle('active', i === index)
+  );
+
+  // Sync thumbs
+  document.querySelectorAll('.gallery-thumbs img').forEach((t, i) =>
+    t.classList.toggle('active', i === index)
+  );
+}
+
+// ─── SWIPE TOUCH ───
+(function() {
+  let startX = 0, startY = 0, isDragging = false;
+
+  function onStart(e) {
+    const touch = e.touches ? e.touches[0] : e;
+    startX = touch.clientX;
+    startY = touch.clientY;
+    isDragging = true;
+  }
+
+  function onEnd(e) {
+    if (!isDragging) return;
+    isDragging = false;
+    const touch = e.changedTouches ? e.changedTouches[0] : e;
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    if (Math.abs(dx) < Math.abs(dy) || Math.abs(dx) < 40) return;
+    if (dx < 0 && currentIndex < currentImages.length - 1) goToSlide(currentIndex + 1);
+    if (dx > 0 && currentIndex > 0) goToSlide(currentIndex - 1);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const main = document.getElementById('galleryMain');
+    main.addEventListener('touchstart', onStart, { passive: true });
+    main.addEventListener('touchend', onEnd, { passive: true });
+    // Mouse drag para desktop
+    main.addEventListener('mousedown', onStart);
+    main.addEventListener('mouseup', onEnd);
+  });
+})();
+
 function switchImage(thumb, src) {
-  document.getElementById('mainImg').src = src;
-  document.querySelectorAll('.gallery-thumbs img').forEach(t => t.classList.remove('active'));
-  thumb.classList.add('active');
+  const idx = Array.from(document.querySelectorAll('.gallery-thumbs img')).indexOf(thumb);
+  goToSlide(idx);
 }
 
 function closeModal() {
