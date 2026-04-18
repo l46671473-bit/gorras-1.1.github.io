@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gorras 1.1</title>
+  <title>Gorras 1.1 — Catálogo</title>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -547,15 +547,420 @@
       letter-spacing: 0.1em;
       text-transform: uppercase;
     }
+
+    /* ─── NAV MENU ─── */
+    .menu-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      transition: border-color 0.2s;
+      flex-shrink: 0;
+    }
+
+    .menu-btn:hover { border-color: var(--accent); }
+
+    .menu-btn span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: var(--text);
+      transition: all 0.3s;
+    }
+
+    .menu-btn.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+    .menu-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .menu-btn.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+    /* NAV OVERLAY */
+    .nav-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      pointer-events: none;
+    }
+
+    .nav-overlay.open { pointer-events: all; }
+
+    /* NAV DRAWER */
+    .nav-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      height: 100%;
+      width: min(340px, 90vw);
+      background: #0e0e0e;
+      border-left: 1px solid var(--border);
+      z-index: 95;
+      transform: translateX(100%);
+      transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .nav-drawer.open { transform: translateX(0); }
+
+    .nav-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 94;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.35s;
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-backdrop.open { opacity: 1; pointer-events: all; }
+
+    .nav-drawer-header {
+      padding: 1.4rem 1.8rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .nav-drawer-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+    }
+
+    .nav-drawer-close {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.2s, color 0.2s;
+    }
+
+    .nav-drawer-close:hover { border-color: var(--accent); color: var(--accent); }
+
+    /* NAV SECTIONS */
+    .nav-sections {
+      flex: 1;
+      padding: 1.5rem 0;
+    }
+
+    .nav-section-label {
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 1.2rem 1.8rem 0.5rem;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.85rem 1.8rem;
+      cursor: pointer;
+      border-bottom: 1px solid transparent;
+      transition: background 0.18s, border-color 0.18s;
+      text-decoration: none;
+      color: var(--text);
+    }
+
+    .nav-item:hover {
+      background: rgba(232, 213, 163, 0.04);
+      border-bottom-color: var(--border);
+    }
+
+    .nav-item-left {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .nav-item-icon {
+      font-size: 1.1rem;
+      width: 22px;
+      text-align: center;
+    }
+
+    .nav-item-text {}
+
+    .nav-item-name {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      letter-spacing: 0.06em;
+      line-height: 1;
+    }
+
+    .nav-item-sub {
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      margin-top: 0.15rem;
+    }
+
+    .nav-item-arrow {
+      font-size: 0.75rem;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.2s;
+    }
+
+    .nav-item:hover .nav-item-arrow {
+      color: var(--accent);
+      transform: translateX(3px);
+    }
+
+    .nav-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 0.5rem 1.8rem;
+    }
+
+    .nav-badge {
+      font-size: 0.55rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      background: var(--accent);
+      color: #0a0a0a;
+      padding: 0.15rem 0.45rem;
+      font-weight: 600;
+    }
+
+    .nav-drawer-footer {
+      padding: 1.4rem 1.8rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .nav-wa-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.65rem;
+      width: 100%;
+      background: #25d366;
+      color: #0a0a0a;
+      font-family: var(--font-body);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.9rem 1.5rem;
+      transition: background 0.2s;
+    }
+
+    .nav-wa-btn:hover { background: #1ebe5d; }
+
+    /* SECTION PAGES */
+    .section-page {
+      display: none;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-page.active { display: block; }
+
+    .section-hero {
+      padding: 4rem 2.5rem 3rem;
+    }
+
+    .section-hero .hero-eyebrow {
+      margin-bottom: 0.75rem;
+    }
+
+    .section-hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 0.92;
+      letter-spacing: 0.04em;
+    }
+
+    .section-hero h1 span { color: var(--accent); }
+
+    .section-hero p {
+      margin-top: 1.2rem;
+      font-size: 0.88rem;
+      color: var(--muted);
+      font-weight: 300;
+      max-width: 380px;
+      line-height: 1.7;
+    }
+
+    /* COMING SOON card */
+    .coming-soon-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+
+    @media (min-width: 768px) { .coming-soon-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .coming-soon-card {
+      background: var(--surface);
+      aspect-ratio: 3/4;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      opacity: 0.45;
+    }
+
+    .cs-icon { font-size: 2.2rem; }
+
+    .cs-label {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+    }
+
+    /* Catalog page wa-section extra note */
+    .wa-section-note {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.5rem;
+    }
   </style>
 </head>
 <body>
 
+<!-- BACKDROP & DRAWER -->
+<div class="nav-backdrop" id="navBackdrop" onclick="closeNav()"></div>
+
+<nav class="nav-drawer" id="navDrawer">
+  <div class="nav-drawer-header">
+    <span class="nav-drawer-logo">GORRAS 1.1</span>
+    <button class="nav-drawer-close" onclick="closeNav()">✕</button>
+  </div>
+
+  <div class="nav-sections">
+    <p class="nav-section-label">Categorías</p>
+
+    <a class="nav-item" onclick="goToSection('gorras'); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">🧢</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">GORRAS</div>
+          <div class="nav-item-sub">Colección completa de headwear</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+
+    <a class="nav-item" onclick="goToSection('apple'); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">🍎</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">APPLE ACCESORIOS</div>
+          <div class="nav-item-sub">iPhone, iPad, Mac y más</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+
+    <hr class="nav-divider" />
+    <p class="nav-section-label">Filtros rápidos — Gorras</p>
+
+    <a class="nav-item" onclick="goToSection('gorras'); filterProducts('DANDY', document.querySelector('.filter-btn[data-cat=DANDY]')); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">◆</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">DANDY HATS</div>
+          <div class="nav-item-sub">Ver solo Dandy</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+
+    <a class="nav-item" onclick="goToSection('gorras'); filterProducts('BARBAS HATS', document.querySelector('[data-cat=\'BARBAS HATS\']')); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">◆</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">BARBAS HATS</div>
+          <div class="nav-item-sub">Ver solo Barbas</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+
+    <a class="nav-item" onclick="goToSection('gorras'); filterProducts('RUDE', document.querySelector('.filter-btn[data-cat=RUDE]')); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">◆</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">RUDE AWAKENINGS</div>
+          <div class="nav-item-sub">Ver solo Rude</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+
+    <hr class="nav-divider" />
+    <p class="nav-section-label">Filtros rápidos — Apple</p>
+
+    <a class="nav-item" onclick="goToSection('apple'); filterApple('iPhone', document.querySelector('.apple-btn[data-acat=iPhone]')); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">📱</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">iPHONE</div>
+          <div class="nav-item-sub">Cases y accesorios</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+
+    <a class="nav-item" onclick="goToSection('apple'); filterApple('AirPods', document.querySelector('.apple-btn[data-acat=AirPods]')); closeNav();">
+      <div class="nav-item-left">
+        <span class="nav-item-icon">🎧</span>
+        <div class="nav-item-text">
+          <div class="nav-item-name">AIRPODS</div>
+          <div class="nav-item-sub">Audífonos Apple</div>
+        </div>
+      </div>
+      <span class="nav-item-arrow">→</span>
+    </a>
+  </div>
+
+  <div class="nav-drawer-footer">
+    <a class="nav-wa-btn" href="https://wa.me/522205203590?text=Hola!%20vi%20tu%20catalogo%20y%20me%20interesa%20un%20producto" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      WhatsApp
+    </a>
+  </div>
+</nav>
+
 <!-- HEADER -->
 <header>
-  <a class="logo" href="#">GORRAS 1.1</a>
-  <span class="header-tag">Catálogo de Gorras</span>
+  <a class="logo" href="#" onclick="goToSection('gorras')">GORRAS 1.1</a>
+  <div style="display:flex;align-items:center;gap:1rem;">
+    <span class="header-tag" id="headerTag">Catálogo de Gorras</span>
+    <button class="menu-btn" id="menuBtn" onclick="toggleNav()" aria-label="Menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
 </header>
+
+<!-- ══════════════════════════════════
+     SECCIÓN: GORRAS (activa por defecto)
+══════════════════════════════════ -->
+<div class="section-page active" id="page-gorras">
 
 <!-- HERO -->
 <section class="hero">
@@ -566,18 +971,65 @@
 
 <!-- FILTROS -->
 <div class="filter-bar">
-  <button class="filter-btn active" onclick="filterProducts('todos', this)">Todos</button>
-  <button class="filter-btn active" onclick="filterProducts('DANDY', this)">DANDY</button>
-  <button class="filter-btn active" onclick="filterProducts('BARBAS HATS', this)">BARBAS HATS</button>
-  <button class="filter-btn active" onclick="filterProducts('RUDE', this)">RUDE</button>
-  <button class="filter-btn active" onclick="filterProducts('BaezXShifu', this)">BaezXShifu</button>
-  <button class="filter-btn active" onclick="filterProducts('WhatsApp', this)">WhatsApp</button>
+  <button class="filter-btn active" data-cat="todos" onclick="filterProducts('todos', this)">Todos</button>
+  <button class="filter-btn" data-cat="DANDY" onclick="filterProducts('DANDY', this)">DANDY</button>
+  <button class="filter-btn" data-cat="BARBAS HATS" onclick="filterProducts('BARBAS HATS', this)">BARBAS HATS</button>
+  <button class="filter-btn" data-cat="RUDE" onclick="filterProducts('RUDE', this)">RUDE</button>
+  <button class="filter-btn" data-cat="BaezXShifu" onclick="filterProducts('BaezXShifu', this)">BaezXShifu</button>
 </div>
 
 <!-- CATÁLOGO GRID -->
 <main class="catalog-grid" id="grid"></main>
 
-<!-- MODAL DETALLE -->
+<!-- WHATSAPP al fondo del catálogo -->
+<section class="wa-section">
+  <p class="wa-eyebrow">¿Te interesa algo?</p>
+  <h2 class="wa-title">CONTÁCTAME<br/><span>POR WHATSAPP</span></h2>
+  <p class="wa-sub">Escríbeme directo, con gusto te doy más info, modelos disponibles o lo que necesites.</p>
+  <a class="wa-btn" href="https://wa.me/522205203590?text=Hola!%20vi%20tu%20catalogo%20y%20me%20interesa%20un%20producto" target="_blank">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    Escribir por WhatsApp
+  </a>
+  <p class="wa-section-note">También puedes usar el menú para explorar más categorías próximamente</p>
+</section>
+
+</div><!-- /page-gorras -->
+
+
+<!-- ══════════════════════════════════
+     SECCIÓN: APPLE ACCESORIOS
+══════════════════════════════════ -->
+<div class="section-page" id="page-apple">
+
+<section class="hero">
+  <p class="hero-eyebrow">Accesorios Originales & Compatibles</p>
+  <h1>APPLE<br/><span>ACCESORIOS</span></h1>
+  <p class="hero-sub">Cases, cargadores, audífonos y más para todo el ecosistema Apple. Toca cualquier producto para ver detalles.</p>
+</section>
+
+<!-- FILTROS APPLE -->
+<div class="filter-bar" id="apple-filter-bar">
+  <button class="filter-btn apple-btn active" data-acat="todos"   onclick="filterApple('todos', this)">Todos</button>
+  <button class="filter-btn apple-btn"         data-acat="AirPods" onclick="filterApple('AirPods', this)">AirPods</button>
+  <button class="filter-btn apple-btn"         data-acat="Watch"   onclick="filterApple('Watch', this)">Apple Watch</button>
+  <button class="filter-btn apple-btn"         data-acat="Cables"  onclick="filterApple('Cables', this)">Cables & Carga</button>
+</div>
+
+<!-- GRID APPLE -->
+<main class="catalog-grid" id="apple-grid"></main>
+
+<!-- WHATSAPP al fondo de Apple -->
+<section class="wa-section">
+  <p class="wa-eyebrow">¿Buscas algo en específico?</p>
+  <h2 class="wa-title">ESCRÍBEME<br/><span>POR WHATSAPP</span></h2>
+  <p class="wa-sub">Si no encuentras lo que buscas, mándame un mensaje y con gusto te consigo el accesorio que necesitas.</p>
+  <a class="wa-btn" href="https://wa.me/522205203590?text=Hola!%20vi%20tu%20catalogo%20y%20me%20interesa%20un%20accesorio%20Apple" target="_blank">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+    Escribir por WhatsApp
+  </a>
+</section>
+
+</div><!-- /page-apple -->
 <div class="modal-bg" id="modalBg" onclick="closeModalOnBg(event)">
   <div class="modal" id="modal">
     <button class="modal-close" onclick="closeModal()">✕</button>
@@ -601,17 +1053,6 @@
   </div>
 </div>
 
-<!-- SECCIÓN WHATSAPP -->
-<section class="wa-section">
-  <p class="wa-eyebrow">¿Te interesa algo?</p>
-  <h2 class="wa-title">CONTÁCTAME<br/><span>POR WHATSAPP</span></h2>
-  <p class="wa-sub">Escríbeme directo, con gusto te doy más info, modelos disponibles o lo que necesites.</p>
-  <a class="wa-btn" href="https://wa.me/522205203590?text=Hola!%20vi%20tu%20catalogo%20y%20me%20interesa%20un%20producto" target="_blank">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-    Escribir por WhatsApp
-  </a>
-</section>
-
 <!-- FOOTER -->
 <footer>
   <span class="footer-logo">GORRAS 1.1</span>
@@ -619,6 +1060,39 @@
 </footer>
 
 <script>
+// ─── NAV MENU ───
+function toggleNav() {
+  const btn = document.getElementById('menuBtn');
+  const drawer = document.getElementById('navDrawer');
+  const backdrop = document.getElementById('navBackdrop');
+  btn.classList.toggle('open');
+  drawer.classList.toggle('open');
+  backdrop.classList.toggle('open');
+}
+
+function closeNav() {
+  document.getElementById('menuBtn').classList.remove('open');
+  document.getElementById('navDrawer').classList.remove('open');
+  document.getElementById('navBackdrop').classList.remove('open');
+}
+
+// ─── SECTION NAVIGATION ───
+const sectionTitles = {
+  gorras: 'Catálogo de Gorras',
+  apple: 'Apple Accesorios',
+};
+
+function goToSection(id) {
+  document.querySelectorAll('.section-page').forEach(p => p.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  if (page) {
+    page.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+  const tag = document.getElementById('headerTag');
+  if (tag) tag.textContent = sectionTitles[id] || '';
+}
+
 // ─────────────────────────────────────────
 //  AQUÍ ES DONDE AGREGAS TUS PRODUCTOS
 //  Cada producto tiene:
@@ -635,7 +1109,7 @@ const products = [
     name: "DANDY HATS LOST-HILLS V1",
     category: "DANDY",
     price: "$350 MXN",
-    badge: "Nuevo",
+    badge: "AGOTADO",
     desc: "DANDY HATS LOST-HILLS V1",
     details: [
       { label: "Marca", value: "Dandy Hats" },
@@ -703,7 +1177,7 @@ const products = [
     name: "SHIFU",
     category: "BaezXShifu",
     price: "$300 MXN",
-    badge: "!Remate!",
+    badge: "AGOTADO",
     desc: "BAEZxSHIFU",
     details: [
       { label: "Marca", value: "Otras marcas" },
@@ -871,6 +1345,142 @@ document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal()
 
 // ─── INIT ───
 renderGrid();
+
+// ══════════════════════════════════
+//  APPLE ACCESORIOS
+//  category: "iPhone" | "AirPods" | "Watch" | "iPad" | "Mac" | "Cables"
+// ══════════════════════════════════
+const appleProducts = [
+  {
+    name: "AIRPODS PRO 2DA GEN",
+    category: "AirPods",
+    price: "$350 MXN",
+    badge: "!POPULAR!",
+    desc: "AirPods Pro segunda generación con cancelación activa de ruido.",
+    details: [
+      { label: "Modelo", value: "AirPods Pro 2da Gen" },
+      { label: "Cancelación", value: "Activa de ruido" },
+      { label: "Batería", value: "6h + 30h con case" },
+    ],
+    images: ["https://i.imgur.com/MDSpePS.jpeg"]
+  },
+  {
+    name: "APPLE WATCH BAND 45MM",
+    category: "Watch",
+    price: "$600 MXN",
+    badge: "Nuevo",
+    desc: "Correa de silicón compatible con Apple Watch 45mm Series 7/8/9/Ultra.",
+    details: [
+      { label: "Compatibilidad", value: "Apple Watch 45mm" },
+      { label: "Material", value: "Silicón suave" },
+      { label: "Colores", value: "Negro, Gris, Negro Mate" },
+    ],
+    images: ["https://i.imgur.com/ozbjAFw.jpeg"]
+  },
+  {
+    name: "CABLE USB-C A LIGHTNING",
+    category: "Cables",
+    price: "$200 MXN",
+    badge: "!POPUlAR!",
+    desc: "Cable trenzado USB-C a Lightning de 1.5m, carga rápida compatible.",
+    details: [
+      { label: "Longitud", value: "1.5 metros" },
+      { label: "Tipo", value: "USB-C a Lightning" },
+      { label: "Carga", value: "Rápida 20W" },
+    ],
+    images: ["https://i.imgur.com/0HtGQ4T.jpeg"]
+  },
+  {
+    name: "BATERIA MAGSAFE 15W",
+    category: "Cables",
+    price: "$300 MXN",
+    badge: "POCAS PIEZAS",
+    desc: "Cargador inalámbrico MagSafe compatible 15W para iPhone 12 en adelante.",
+    details: [
+      { label: "Potencia", value: "15W máximo" },
+      { label: "Compatibilidad", value: "iPhone 12 / 13 / 14 / 15 / 16 / 17" },
+      { label: "Cable", value: "USB-C incluido" },
+    ],
+    images: ["https://i.imgur.com/v2jzbJf.jpeg"]
+  },
+  {
+    name: "CABLE USB-C A USB-C",
+    category: "Cables",
+    price: "$200 MXN",
+    badge: "!POPULAR!",
+    desc: "Cable USB-C a USB-C trenzado de 2 metros. Carga rápida y transferencia de datos.",
+    details: [
+      { label: "Longitud", value: "2 metros" },
+      { label: "Tipo", value: "USB-C a USB-C" },
+      { label: "Velocidad", value: "Hasta 480 Mbps" },
+    ],
+     images: ["https://i.imgur.com/VjVTSWa.jpeg"]
+  },
+];
+
+// ─── RENDER APPLE GRID ───
+const appleGrid = document.getElementById('apple-grid');
+
+function renderAppleGrid(filter = 'todos') {
+  appleGrid.innerHTML = '';
+  const filtered = filter === 'todos' ? appleProducts : appleProducts.filter(p => p.category === filter);
+  filtered.forEach((p, i) => {
+    const idx = appleProducts.indexOf(p);
+    const card = document.createElement('div');
+    card.className = 'product-card';
+    card.style.animationDelay = `${i * 0.055}s`;
+    card.innerHTML = `
+      <div class="card-image-wrap">
+        <img src="${p.images[0]}" alt="${p.name}" loading="lazy" />
+        <div class="card-overlay"></div>
+        ${p.badge ? `<span class="card-badge">${p.badge}</span>` : ''}
+      </div>
+      <div class="card-info">
+        <p class="card-category">${p.category}</p>
+        <p class="card-name">${p.name}</p>
+        <p class="card-price">${p.price}</p>
+      </div>
+      <div class="card-arrow">→</div>
+    `;
+    card.addEventListener('click', () => openAppleModal(idx));
+    appleGrid.appendChild(card);
+  });
+}
+
+function filterApple(cat, btn) {
+  document.querySelectorAll('.apple-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderAppleGrid(cat);
+}
+
+// ─── APPLE MODAL (reutiliza el mismo modal) ───
+function openAppleModal(idx) {
+  const p = appleProducts[idx];
+  document.getElementById('mCat').textContent = p.category.toUpperCase();
+  document.getElementById('mName').textContent = p.name;
+  document.getElementById('mPrice').textContent = p.price;
+  document.getElementById('mDesc').textContent = p.desc;
+  const det = document.getElementById('mDetails');
+  det.innerHTML = p.details.map(d => `
+    <div class="detail-row">
+      <span class="detail-label">${d.label}</span>
+      <span class="detail-value">${d.value}</span>
+    </div>
+  `).join('');
+  currentImages = p.images;
+  currentIndex = 0;
+  buildSlider();
+  const thumbs = document.getElementById('thumbs');
+  thumbs.innerHTML = p.images.map((img, i) => `
+    <img src="${img}" alt="${p.name} foto ${i+1}" class="${i === 0 ? 'active' : ''}"
+      onclick="goToSlide(${i})" />
+  `).join('');
+  document.getElementById('modalBg').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+// ─── INIT APPLE ───
+renderAppleGrid();
 </script>
 </body>
 </html>
