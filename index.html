@@ -281,12 +281,76 @@
     .modal {
       background: var(--surface);
       border: 1px solid var(--border);
-      max-width: 900px;
+      max-width: 1050px;
       width: 100%;
       display: grid;
       grid-template-columns: 1fr;
       animation: slideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
       position: relative;
+    }
+
+    /* RESEÑAS */
+    .modal-reviews {
+      grid-column: 1 / -1;
+      border-top: 1px solid var(--border);
+      padding: 2rem 2rem 2.5rem;
+    }
+
+    .reviews-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      letter-spacing: 0.1em;
+      color: var(--accent);
+      margin-bottom: 1.4rem;
+    }
+
+    .reviews-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .review-card {
+      background: #161616;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      padding: 1.2rem 1.4rem;
+      display: flex;
+      gap: 1rem;
+      align-items: flex-start;
+    }
+
+    .review-avatar {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      flex-shrink: 0;
+      border: 2px solid var(--accent2);
+    }
+
+    .review-body { flex: 1; }
+
+    .review-name {
+      font-weight: 500;
+      font-size: 0.9rem;
+      color: var(--text);
+      margin-bottom: 0.3rem;
+    }
+
+    .review-stars {
+      color: #f5c518;
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.45rem;
+    }
+
+    .review-text {
+      font-size: 0.85rem;
+      color: #aaa;
+      font-weight: 300;
+      line-height: 1.6;
     }
 
     @media (min-width: 640px) {
@@ -1050,6 +1114,39 @@
       <p class="modal-desc" id="mDesc"></p>
       <div class="modal-details" id="mDetails"></div>
     </div>
+
+    <!-- RESEÑAS -->
+    <div class="modal-reviews">
+      <p class="reviews-title">RESEÑAS DE CLIENTES</p>
+      <div class="reviews-list">
+
+        <div class="review-card">
+          <img class="review-avatar"
+            src="https://i.imgur.com/DnwEp2i.jpeg"
+            alt="Cristiano Ronaldo"
+            onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Cristiano_Ronaldo_playing_for_Portugal_in_Euro_2012.jpg/440px-Cristiano_Ronaldo_playing_for_Portugal_in_Euro_2012.jpg'" />
+          <div class="review-body">
+            <p class="review-name">Cristiano Ronaldo</p>
+            <p class="review-stars">★★★★★</p>
+            <p class="review-text">SIUUUUU exelente producto</p>
+          </div>
+        </div>
+
+        <div class="review-card">
+          <img class="review-avatar"
+            src="https://i.imgur.com/cicMQyL.jpeg"
+            alt="Lionel Messi"
+            onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Lionel_Messi_in_2019.jpg/440px-Lionel_Messi_in_2019.jpg'" />
+          <div class="review-body">
+            <p class="review-name">Lionel Messi</p>
+            <p class="review-stars">★★★★★</p>
+            <p class="review-text">Che boludo la calidad 10/10 recomendado</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
   </div>
 </div>
 
